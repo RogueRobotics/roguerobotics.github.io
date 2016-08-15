@@ -1,0 +1,22 @@
+# main links links
+main:
+  - title: "Buy Online"
+    url: https://roguerobotics.com/
+
+  - title: "Products"
+    url: /products
+
+  - title: "Services"
+    url: /services
+
+  - title: "Projects"
+    url: /projects
+
+  - title: "Code"
+    url: /code
+
+  - title: "Tools"
+    url: /tools
+
+  - title: "Tips"
+    url: /tips

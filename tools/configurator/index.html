@@ -1,0 +1,568 @@
+---
+layout: single
+title: Rogue Robotics Settings Configurator
+---
+<script type="text/javascript" src="//code.jquery.com/jquery-3.0.0.js"></script>
+<script type="text/javascript" src="rogue_configurator.js"></script>
+
+<style type="text/css">
+body {
+  font-family: sans-serif;
+}
+
+fieldset {
+  border: 4px solid #0182AC;
+  border-radius: 4px;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  background: #eee;
+}
+
+fieldset div {
+  padding: 2px;
+}
+
+legend {
+  background: #0182AC;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.4em;
+}
+
+label {
+  display: block;
+  float: left;
+  width: 150px;
+}
+
+code {
+  font-weight: bold;
+  background: #ffffff;
+  color: #000000;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+input[type=checkbox]:not(old),
+input[type=radio   ]:not(old) {
+  width: 1em;
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+}
+
+.configurator-container {
+  width: 600px;
+}
+
+.setting {
+  width: 100%;
+  display: block;
+  float: left;
+  border-bottom: 4px solid #0182AC;
+  
+}
+
+.settingInput {
+  background: #fff;
+  border: 1px solid #0182AC;
+  display: block;
+  float: left;
+}
+
+.radioSet {
+  width: 350px;
+}
+
+.radioItem {
+  display: block;
+  clear: both;
+}
+
+.checkboxSet {
+  display: block;
+  float: left;
+}
+
+.binaryCheckboxSet {
+  clear: left;
+}
+
+.checkHeader {
+  display: block;
+  float: left;
+  width: 1.2em;
+  text-align: center;
+}
+
+.checkItem {
+  display: block;
+  float:left;
+  width: 1.2em;
+  text-align: center;
+}
+
+.settingOutput {
+  display: block;
+  float: right;
+  border: 1px solid #aaa;
+  padding: 10px;
+  font-family: Monospace;
+  background: #fff;
+  white-space: pre;
+}
+
+.outputWindow {
+  border: 1px solid #aaa;
+  padding: 10px;
+  font-family: Monospace;
+  background: #fff;
+  white-space: pre;
+}
+
+#char, #delayMs {
+  border: 1px solid #aaa;
+  padding: 2px;
+  font-family: Monospace;
+  background: #fff;
+}
+
+#promptCharDefault {
+  border: 1px solid #ddd;
+  padding: 2px;
+  background: #fff;
+  cursor: pointer;
+}
+
+#promptCharDefault:hover {
+  background: #eee;
+}
+
+.field-tip {
+  position: relative;
+  cursor: help;
+}
+
+.field-tip .tip-content {
+  font-size: 80%;
+  position:absolute;
+  top:0px; /* - top padding */
+  right:9999px;
+  width:200px;
+  margin-right:-220px; /* width + left/right padding */
+  padding:10px;
+  color:#fff;
+  background:#333;
+  -webkit-box-shadow:2px 2px 5px #aaa;
+  -moz-box-shadow:2px 2px 5px #aaa;
+  box-shadow:2px 2px 5px #aaa;
+  opacity:0;
+  -webkit-transition:opacity 250ms ease-out;
+  -moz-transition:opacity 250ms ease-out;
+  -ms-transition:opacity 250ms ease-out;
+  -o-transition:opacity 250ms ease-out;
+  transition:opacity 250ms ease-out;
+  z-index: 2;
+}
+
+/* <http://css-tricks.com/snippets/css/css-triangle/> */
+.field-tip .tip-content:before {
+  content:' '; /* Must have content to display */
+  position:absolute;
+  //top:50%;
+  left:-16px; /* 2 x border width */
+  width:0;
+  height:0;
+  margin-top:-8px; /* - border width */
+  border:8px solid transparent;
+  border-right-color:#333;
+}
+
+.field-tip:hover .tip-content {
+  right:-20px;
+  opacity:1;
+}
+
+.helpbox {
+  margin-left: 0.2em;
+  padding: 0.1em;
+  background: #fff;
+  border: 1px solid #0182AC;
+  display: block;
+  float: left;
+}
+
+.flash {
+  -moz-animation: flash 500ms ease-out;
+  -moz-animation-iteration-count: 1;
+
+  -webkit-animation: flash 500ms ease-out;
+  -webkit-animation-iteration-count: 1;
+
+  -ms-animation: flash 500ms ease-out;
+  -ms-animation-iteration-count: 1;
+
+}
+
+@-webkit-keyframes flash {
+    0% { background-color: #ff9999;}
+    100% {background-color: none;}
+}
+
+@-moz-keyframes flash {
+    0% { background-color: #ff9999;}
+    100% {background-color: none;}
+}
+
+@-ms-keyframes flash {
+    0% { background-color: #ff9999;}
+    100% {background-color:none;}
+}
+</style>
+
+<div class="configurator-container">
+<p>Select your module: 
+  <select name="moduleSelection">
+    <option value="UMMC">uMMC Data Storage Module</option>
+    <option value="UMP3">uMP3 Playback Module</option>
+    <option value="RMP3" selected>rMP3 Playback Module</option>
+  </select>
+</p>
+<p>
+You can <a href="#output">save</a> your configuration below.
+</p>
+<fieldset id="inputSettings">
+  <legend>Input Settings</legend>
+  <div class="setting">
+    <label>Input Style: </label>
+    <div class="radioSet settingInput">
+      <div class="radioItem"><input type="radio" name="inputStyle" value="0" checked> Ignore</div>
+      <div class="radioItem"><input type="radio" name="inputStyle" value="1">
+        <span class="field-tip"> 8-Button
+          <span class="tip-content">8-Button mode sets each input as a single trigger for track playback.</span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="inputStyle" value="2">
+        <span class="field-tip"> 7-Bit
+          <span class="tip-content">7-Bit mode provides a 7 bit file selection on the inputs, and is triggered by the 8th input (negative edge).</span>
+        </span>
+      </div>
+    </div>
+    <div class="settingOutput" id="outputInputStyle">S0</div>
+  </div>
+  <div class="setting">
+    <label>File Offset: </label>
+    <div class="settingInput"><input type="number" name="fileOffset" min="0" max="9872" value="0"></div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">This is the starting number for both the 8-Button and 7-Bit input modes.</span>
+    </div>
+    <div class="settingOutput" id="outputFileOffset">N0</div>
+  </div>
+  <div class="setting">
+    <label for="hardwareBusyIndicator">Hardware Busy Indicator: </label>
+    <div class="settingInput"><input type="checkbox" name="hardwareBusyIndicator"></div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">“D” pin becomes a hardware busy logic output (high = playing)</span>
+    </div>
+    <div class="settingOutput" id="outputHBI">H0</div>
+  </div>
+  <div class="setting">
+    <label for="debounce">Debounce: </label>
+    <div class="settingInput"><input type="checkbox" name="debounce"></div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Used only in 8-Button mode, this setting will turn on a simple 40 ms debounce algorithm for the inputs.</span>
+    </div>
+    <div class="settingOutput" id="outputDebounce">M0</div>
+  </div>
+  <div class="setting">
+    <label>Input Polarity: </label>
+    <div class="checkboxSet settingInput">
+      <div class="binaryCheckboxHeader">
+        <span class="checkHeader">7</span>
+        <span class="checkHeader">6</span>
+        <span class="checkHeader">5</span>
+        <span class="checkHeader">4</span>
+        <span class="checkHeader">3</span>
+        <span class="checkHeader">2</span>
+        <span class="checkHeader">1</span>
+        <span class="checkHeader">0</span>
+      </div>
+      <div class="binaryCheckboxSet">
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-7"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-6"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-5"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-4"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-3"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-2"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-1"></span>
+        <span class="checkItem"><input type="checkbox" name="inputPolarity-0"></span>
+      </div>
+    </div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Used only in 8-Button mode, this 8-bit mask indicates the polarity of input for each individual input pin (a 1 in the mask indicates positive edge triggering).</span>
+    </div>
+    <div class="settingOutput" id="outputInputPolarity">A0</div>
+  </div>
+  <div class="setting">
+    <label>Non-stop Playback: </label>
+    <div class="checkboxSet settingInput">
+      <div class="binaryCheckboxHeader">
+        <span class="checkHeader">7</span>
+        <span class="checkHeader">6</span>
+        <span class="checkHeader">5</span>
+        <span class="checkHeader">4</span>
+        <span class="checkHeader">3</span>
+        <span class="checkHeader">2</span>
+        <span class="checkHeader">1</span>
+        <span class="checkHeader">0</span>
+      </div>
+      <div class="binaryCheckboxSet">
+        <span class="checkItem"><input type="checkbox" name="nonStop-7"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-6"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-5"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-4"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-3"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-2"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-1"></span>
+        <span class="checkItem"><input type="checkbox" name="nonStop-0"></span>
+      </div>
+    </div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">In 8-Button mode, this 8-bit mask indicates which buttons will be considered non-stop (a 1 in the mask indicates non-stop).<br /><br />In 7-Bit mode, anything > 0 will indicate non-stop playback.<br /><br />Non-stop playback means that a track is played to completion, without interruption.</span>
+    </div>
+    <div class="settingOutput" id="outputNonStop">U0</div>
+  </div>
+</fieldset>
+
+<fieldset id="audioSettings">
+  <legend>Audio Settings</legend>
+  <div class="setting">
+    <label>Startup Volume: </label>
+    <div class="settingInput"><input type="number" name="startupVolume" min="0" max="255" value="16"> <span id="volumeDisplay">-8.0</span> dB</div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Sets the start-up volume. You can change the volume dynamically using the <code>PC V</code> command after start-up.  Note that lower numbers are louder, and higher numbers are quieter.</span>
+    </div>
+    <div class="settingOutput" id="outputStartupVolume">V16</div>
+  </div>
+  <div class="setting">
+    <label>Playback Loop Count: </label>
+    <div class="settingInput"><input type="number" name="loopCount" min="0" max="255" value="1"></div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Sets the start-up loop count for playback. This is the number of times a track is repeated. You can change the volume dynamically using the <code>PC O</code> command after start-up.</span>
+    </div>
+    <div class="settingOutput" id="outputLoopCount">O1</div>
+  </div>
+  <div class="setting">
+    <label>Treble Boost: </label>
+    <div class="settingInput">
+      <select name="trebleFrequency">
+        <option value="15">15000 Hz</option>
+        <option value="14">14000 Hz</option>
+        <option value="13">13000 Hz</option>
+        <option value="12">12000 Hz</option>
+        <option value="11">11000 Hz</option>
+        <option value="10">10000 Hz</option>
+        <option value="9">9000 Hz</option>
+        <option value="8">8000 Hz</option>
+        <option value="7">7000 Hz</option>
+        <option value="6">6000 Hz</option>
+        <option value="5">5000 Hz</option>
+        <option value="4">4000 Hz</option>
+        <option value="3">3000 Hz</option>
+        <option value="2">2000 Hz</option>
+        <option value="1" selected>1000 Hz</option>
+      </select>
+    </div>
+    <div class="settingInput">
+      <select name="trebleBoost">
+        <option value="7">+10.5 dB</option>
+        <option value="6">+9.0 dB</option>
+        <option value="5">+7.5 dB</option>
+        <option value="4">+6.0 dB</option>
+        <option value="3">+4.5 dB</option>
+        <option value="2">+3.0 dB</option>
+        <option value="1">+1.5 dB</option>
+        <option value="0" selected>No Treble Boost</option>
+        <option value="8">-1.5 dB</option>
+        <option value="9">-3.0 dB</option>
+        <option value="10">-4.5 dB</option>
+        <option value="11">-6.0 dB</option>
+        <option value="12">-7.5 dB</option>
+        <option value="13">-9.0 dB</option>
+        <option value="14">-10.5 dB</option>
+        <option value="15">-12.0 dB</option>
+      </select>
+    </div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Provides a gain (or attenuation) for frequencies at and above the selected treble frequency.</span>
+    </div>
+    <div class="settingOutput" id="outputBoost">B0</div>
+    <label style="clear: left;">Bass Boost: </label>
+    <div class="settingInput">
+      <select name="bassFrequency">
+        <option value="15">150 Hz</option>
+        <option value="14">140 Hz</option>
+        <option value="13">130 Hz</option>
+        <option value="12">120 Hz</option>
+        <option value="11">110 Hz</option>
+        <option value="10">100 Hz</option>
+        <option value="9">90 Hz</option>
+        <option value="8">80 Hz</option>
+        <option value="7">70 Hz</option>
+        <option value="6">60 Hz</option>
+        <option value="5">50 Hz</option>
+        <option value="4">40 Hz</option>
+        <option value="3">30 Hz</option>
+        <option value="2" selected>20 Hz</option>
+      </select>
+    </div>
+    <div class="settingInput">
+      <select name="bassBoost">
+        <option value="15">+15 dB</option>
+        <option value="14">+14 dB</option>
+        <option value="13">+13 dB</option>
+        <option value="12">+12 dB</option>
+        <option value="11">+11 dB</option>
+        <option value="10">+10 dB</option>
+        <option value="9">+9 dB</option>
+        <option value="8">+8 dB</option>
+        <option value="7">+7 dB</option>
+        <option value="6">+6 dB</option>
+        <option value="5">+5 dB</option>
+        <option value="4">+4 dB</option>
+        <option value="3">+3 dB</option>
+        <option value="2">+2 dB</option>
+        <option value="1">+1 dB</option>
+        <option value="0" selected>No Bass Boost</option>
+      </select>
+    </div>
+    <div class="field-tip helpbox"><strong>?</strong>
+      <span class="tip-content">Provides a gain for frequencies at and above the selected bass frequency.</span>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset id="fileSettings">
+  <legend>File Settings</legend>
+  <div class="setting">
+    <label>Copy Progress Style: </label>
+    <div class="radioSet settingInput">
+      <div class="radioItem"><input type="radio" name="copyStyle" value="0" checked> None</div>
+      <div class="radioItem"><input type="radio" name="copyStyle" value="1"> <span class="field-tip">Progress hash "#" every 2048 bytes
+        <span class="tip-content">e.g. <code>#########...####</code></span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="copyStyle" value="2"> <span class="field-tip">Total bytes copied and copy rate
+        <span class="tip-content">e.g. <code>nn..nn bytes copied at r..rr bytes/second</code></span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="copyStyle" value="3"> <span class="field-tip">Progress hash, bytes copied, and copy rate
+        <span class="tip-content">e.g. <code>#####...####nn..nn bytes copied at r..rr bytes/second</code></span>
+        </span>
+      </div>
+    </div>
+    <div class="settingOutput" id="outputCopyStyle">C0</div>
+  </div>
+  <div class="setting">
+    <label>Read/Write Line Ending: </label>
+    <div class="radioSet settingInput">
+      <div class="radioItem"><input type="radio" name="lineEnding" value="0" checked> <span class="field-tip">CR
+        <span class="tip-content"><code>RL</code> and <code>WL</code> commands use a <code>&lt;CR&gt;</code> as a terminator.</span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="lineEnding" value="1"> <span class="field-tip">LF
+        <span class="tip-content"><code>RL</code> and <code>WL</code> commands use a <code>&lt;LF&gt;</code> as a terminator.</span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="lineEnding" value="2"> <span class="field-tip">CRLF
+        <span class="tip-content"><code>RL</code> and <code>WL</code> commands use <code>&lt;CR&gt;&lt;LF&gt;</code> as a terminator.</span>
+        </span>
+      </div>
+    </div>
+    <div class="settingOutput" id="outputLineEnding">E0</div>
+  </div>
+  <div class="setting">
+    <label>Write Time-out: </label>
+    <div class="settingInput"><input type="number" name="writeTimeout" min="0" max="255" value="0"> <span id="displayWriteTimeout">--</span> ms</div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Amount of time the module will wait for data from the host before timing out during a write. (0 = no time-out, waits forever)</span>
+    </div>
+    <div class="settingOutput" id="outputWriteTimeout">T0</div>
+  </div>
+  <div class="setting">
+    <label>Directory Style: </label>
+    <div class="radioSet settingInput">
+      <div class="radioItem"><input type="radio" name="dirStyle" value="0" checked> <span class="field-tip">Old Style
+        <span class="tip-content">Terse listing data.</span>
+        </span>
+      </div>
+      <div class="radioItem"><input type="radio" name="dirStyle" value="1"> <span class="field-tip">New style
+        <span class="tip-content">Verbose listing data.</span>
+        </span>
+      </div>
+    </div>
+    <div class="settingOutput" id="outputDirStyle">L0</div>
+  </div>
+</fieldset>
+
+<fieldset id="communicationSettings">
+  <legend>Communication Settings</legend>
+  <div class="setting">
+    <label>Data Rate: </label>
+    <div class="settingInput">
+      <select name="dataRate">
+        <option value="5">2400</option>
+        <option value="6">4800</option>
+        <option value="0" selected>9600</option>
+        <option value="1">19200</option>
+        <option value="2">38400</option>
+        <option value="3">57600</option>
+        <option value="4">115200</option>
+        <option value="7">230400</option>
+        <option value="8">460800</option>
+      </select>
+    </div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Bit rate for serial communications.</span>
+    </div>
+    <div class="settingOutput" id="outputDataRate">D0</div>
+  </div>
+  <div class="setting">
+    <label>Prompt Character: </label>
+    <div class="settingInput"><input type="number" name="promptChar" min="0" max="255" value="62"> <span id="char">&gt;</span> <span id="promptCharDefault">Default</span></div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">This is the character used for synchronizing commands.</span>
+    </div>
+    <div class="settingOutput" id="outputPromptChar">P62</div>
+  </div>
+  <div class="setting">
+    <label>Response Delay: </label>
+    <div class="settingInput"><input type="number" name="responseDelay" min="0" max="255" value="0"> <span id="displayResponseDelay">0</span> ms</div>
+    <div class="field-tip helpbox"> <strong>?</strong>
+      <span class="tip-content">Minimum delay before serial response.</span>
+    </div>
+    <div class="settingOutput" id="outputResponseDelay">R0</div>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Output</legend>
+  <button id="btn-save">Save to File</button> <span>Save this file to the root folder of your flash card.</span>
+  <div id="output" class="outputWindow">S0
+N0
+H0
+M0
+A0
+U0
+V16
+O1
+B0
+C0
+E0
+T0
+L0
+D0
+P62
+R0</div>
+</fieldset>
+</div>
