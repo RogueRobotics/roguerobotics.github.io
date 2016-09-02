@@ -35,6 +35,7 @@ Below are some resources for the uMP3 Playback Module.
 ## Specifications and Standards
 
   * [Electrical Characteristics](electrical_characteristics.html)
+  * [Mechanical Drawing](mechanical_drawing.html)
 {% comment %}
   * [Timing Characteristics](timing_characteristics.html)
 {% endcomment %}
