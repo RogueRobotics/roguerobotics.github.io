@@ -74,7 +74,8 @@ social:
 analytics:
   provider               : google # false (default), "google", "google-universal", "custom"
   google:
-    tracking_id          : UA-63663218-1
+    tracking_id          : G-FSYJP000JL
+    # tracking_id          : UA-63663218-1
 
 
 # Site Author
